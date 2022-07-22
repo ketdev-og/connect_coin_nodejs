@@ -12,6 +12,7 @@ const RegisterSchema = joi.object({
     "string.email": "Provide a valid email address",
   }),
   country: joi.string().required(),
+  username: joi.string().required(),
   state: joi.string().required(),
   city: joi.string().required(),
 
@@ -26,8 +27,9 @@ const RegisterSchema = joi.object({
     .messages({
       "string.min": "Must have at least 8 characters",
       "object.regex": "Must have at least 8 characters",
-      "string.pattern.base": "should conatin a upper and lower case letters and a number"
+      "string.pattern.base": "Should conatin a upper and lower case letters and a number"
     }),
+    confirm_password:joi.any().valid(joi.ref('password'))
 });
 
 module.exports = {

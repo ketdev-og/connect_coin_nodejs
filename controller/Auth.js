@@ -17,11 +17,12 @@ const registerController =
   ("/register",
   async (req, res, next) => {
     try {
+      console.log(req.body);
       const result = await RegisterSchema.validateAsync(req.body);
       const email = result.email;
       const verifyEmail = await User.findOne({ where: { email: email } });
 
-      if (verifyEmail) throw createHttpError.Conflict("email already exist");
+      if (verifyEmail) throw createHttpError.Conflict("Email already exist");
       const password = result.password;
 
       const salt = await bcrypt.genSalt(saltRounds);
@@ -29,7 +30,7 @@ const registerController =
 
       const newUser = await User.create({ ...result, password: hashPassword });
       if (!newUser)
-        throw createHttpError.InternalServerError("unable to create new user");
+        throw createHttpError.InternalServerError("Unable to create new user");
 
       jwt.sign({ ...newUser }, secret, options, (err, userToken) => {
         res.send({ status:200,token: userToken });
@@ -46,13 +47,13 @@ const loginController = async (req, res, next) => {
     const { email, password } = await LoginSchema.validateAsync(req.body);
 
     const user = await User.findOne({ where: { email: email } });
-    if (!user) throw createHttpError.NotFound("invalid email or password");
+    if (!user) throw createHttpError.NotFound("Invalid email or password");
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) throw createHttpError.Unauthorized("invalid email or password");
+    if (!match) throw createHttpError.Unauthorized("Invalid email or password");
 
     await jwt.sign({ ...user }, secret, options, (err, userToken) => {
-      if (err) throw createHttpError.Conflict("unable to create token");
+      if (err) throw createHttpError.Conflict("Unable to create token");
       res.send({ status:200,token: userToken });
     });
   } catch (error) {

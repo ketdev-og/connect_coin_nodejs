@@ -14,11 +14,9 @@ app.use(express.urlencoded({extended:true}));
 
 var accessLog = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags:'a'});
 app.use(morgan('combined', {stream:accessLog}));
-app.use(cors({
-    origin:'*'
-}));
+app.use(cors());
 
-app.use('/v1/auth', AuthRoute);
+app.use('/v1/auth', AuthRoute)
 
 
 app.get('/', (req, res)=>{
