@@ -20,13 +20,13 @@ const RegisterSchema = joi.object({
   }),
   account: joi.string().required(),
   password: joi.string()
-    .min(6)
+    .min(8)
+    .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,30}$/)
     .required()
-    .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
     .messages({
-      "string.empty": "No Password provided",
-      "string.pattern.base":
-        "minmum of 3 characters must contain lowercase, uppercase and number",
+      "string.min": "Must have at least 8 characters",
+      "object.regex": "Must have at least 8 characters",
+      "string.pattern.base": "should conatin a upper and lower case letters and a number"
     }),
 });
 
