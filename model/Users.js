@@ -14,7 +14,8 @@ module.exports = (sequalize, DataTypes)=>{
         city:DataTypes.STRING,
         phone:DataTypes.STRING,
         account:DataTypes.STRING,
-        password:DataTypes.STRING
+        password:DataTypes.STRING,
+        username:DataTypes.STRING
     },{
         freezeTablename:true,
     });
