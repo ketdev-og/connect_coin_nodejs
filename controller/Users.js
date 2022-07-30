@@ -33,7 +33,26 @@ const updateUserController = async (req, res, next) => {
   }
 }
 
+const getAllUsersController = async(req,res,next) => {
+  try{
+      const users = await User.findAll();
+      if (!users) throw createHttpError.InternalServerError();
+      res.send({ status: 200, user: users});
+  }catch(error){
+    next(error);
+  }
+}
+
+const getCounts = async(req,res,next) => {
+  try {
+    const userCount = await User.count();
+    if (!userCount) throw createHttpError.InternalServerError();
+    res.send({ status: 200, counts:{userCount: userCount, withdrawalCount:"",depositCount:""}});
+  } catch (error) {
+    next(error)
+  }
+  
+}
 
 
-
-module.exports = { getUserController, updateUserController }
+module.exports = { getUserController, updateUserController, getAllUsersController, getCounts }
