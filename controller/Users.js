@@ -35,9 +35,15 @@ const updateUserController = async (req, res, next) => {
 
 const getAllUsersController = async(req,res,next) => {
   try{
+    const usersData = []
       const users = await User.findAll();
       if (!users) throw createHttpError.InternalServerError();
-      res.send({ status: 200, user: users});
+      users.map(user=>{
+        const userDetail = {...user.dataValues, createdAt:new Date(user.createdAt).toDateString()}
+        usersData.push(userDetail)
+       
+      })
+      res.send({ status: 200, user: usersData});
   }catch(error){
     next(error);
   }
