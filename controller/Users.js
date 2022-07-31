@@ -1,6 +1,8 @@
 const createHttpError = require('http-errors');
 const {
-  models: { User },
+  models: {
+    User
+  },
 } = require("../service/db/sequelize");
 
 const getUserController = async (req, res, next) => {
@@ -10,12 +12,41 @@ const getUserController = async (req, res, next) => {
 
     if (!userId) throw createHttpError.Unauthorized("Invalid user Id");
 
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findOne({
+      where: {
+        id: userId
+      }
+    });
     if (!user) throw createHttpError.NotFound("User not found");
 
-    res.send({ status: 200, user: user });
+    res.send({
+      status: 200,
+      user: user
+    });
   } catch (error) {
-   
+
+  }
+};
+
+const getUserById = async (req, res, next) => {
+  try {
+    userId = req.body.id;
+
+    if (!userId) throw createHttpError.BadRequest("Invalid user Id");
+
+    const user = await User.findOne({
+      where: {
+        id: userId
+      }
+    });
+    if (!user) throw createHttpError.NotFound("User not found");
+
+    res.send({
+      status: 200,
+      user: user
+    });
+  } catch (error) {
+    next(error)
   }
 };
 
@@ -24,41 +55,88 @@ const updateUserController = async (req, res, next) => {
     userId = req.payload.dataValues.id;
     if (!userId) throw createHttpError.Unauthorized("Invalid user Id");
     const user = await User.update(req.body, {
-      where: { id: req.body.id }
+      where: {
+        id: req.body.id
+      }
     });
     if (!user) throw createHttpError.NotFound("User not found");
-    res.send({ status: 200, user: user });
+    res.send({
+      status: 200,
+      user: user
+    });
   } catch (error) {
     next(error);
   }
 }
 
-const getAllUsersController = async(req,res,next) => {
-  try{
+const getAllUsersController = async (req, res, next) => {
+  try {
     const usersData = []
-      const users = await User.findAll();
-      if (!users) throw createHttpError.InternalServerError();
-      users.map(user=>{
-        const userDetail = {...user.dataValues, createdAt:new Date(user.createdAt).toDateString()}
-        usersData.push(userDetail)
-       
-      })
-      res.send({ status: 200, user: usersData});
-  }catch(error){
+    const users = await User.findAll();
+    if (!users) throw createHttpError.InternalServerError();
+    users.map(user => {
+      const userDetail = {
+        ...user.dataValues,
+        createdAt: new Date(user.createdAt).toDateString()
+      }
+      usersData.push(userDetail)
+
+    })
+    res.send({
+      status: 200,
+      user: usersData
+    });
+  } catch (error) {
     next(error);
   }
 }
 
-const getCounts = async(req,res,next) => {
+const getCounts = async (req, res, next) => {
   try {
     const userCount = await User.count();
     if (!userCount) throw createHttpError.InternalServerError();
-    res.send({ status: 200, counts:{userCount: userCount, withdrawalCount:"",depositCount:""}});
+    res.send({
+      status: 200,
+      counts: {
+        userCount: userCount,
+        withdrawalCount: "",
+        depositCount: ""
+      }
+    });
   } catch (error) {
     next(error)
   }
-  
+
+}
+
+const deleteUser = async (req, res, next) => {
+  try {
+    userId = req.body.id;
+
+    if (!userId) throw createHttpError.BadRequest("Invalid user Id");
+
+    const user = await User.destroy({
+      where: {
+        id: userId
+      }
+    });
+    if (!user) throw createHttpError.NotFound("User not found");
+
+    res.send({
+      status: 200,
+      user: "user deleted"
+    });
+  } catch (error) {
+    next(error)
+  }
 }
 
 
-module.exports = { getUserController, updateUserController, getAllUsersController, getCounts }
+module.exports = {
+  getUserController,
+  updateUserController,
+  getAllUsersController,
+  getCounts,
+  getUserById,
+  deleteUser
+}
