@@ -1,3 +1,5 @@
+const Deposit = require("./Deposit");
+
 module.exports = (sequalize, DataTypes)=>{
     const User = sequalize.define('user',{
         id: {

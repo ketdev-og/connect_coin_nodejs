@@ -23,5 +23,10 @@ const db = {};
 db.sequelize = sequelize;
 db.models = {};
 db.models.User = require('../../../model/Users')(sequelize,Sequelize.DataTypes);
+db.models.Deposit = require('../../../model/Deposit')(sequelize,Sequelize.DataTypes);
 
+db.models.User.hasMany(db.models.Deposit,{ as: "deposits" });
+db.models.Deposit.belongsTo(db.models.User,{
+    as: "user",
+})
 module.exports = db
