@@ -24,9 +24,15 @@ db.sequelize = sequelize;
 db.models = {};
 db.models.User = require('../../../model/Users')(sequelize,Sequelize.DataTypes);
 db.models.Deposit = require('../../../model/Deposit')(sequelize,Sequelize.DataTypes);
+db.models.Withdraw = require('../../../model/Withdraw')(sequelize,Sequelize.DataTypes);
 
 db.models.User.hasMany(db.models.Deposit,{ as: "deposits" });
 db.models.Deposit.belongsTo(db.models.User,{
+    as: "user",
+})
+
+db.models.User.hasMany(db.models.Withdraw,{ as: "withdraws" });
+db.models.Withdraw.belongsTo(db.models.User,{
     as: "user",
 })
 module.exports = db

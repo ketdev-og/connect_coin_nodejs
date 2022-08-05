@@ -24,7 +24,7 @@ const getUserController = async (req, res, next) => {
       user: user
     });
   } catch (error) {
-
+    next(error)
   }
 };
 

@@ -1,16 +1,17 @@
 module.exports = (sequalize, DataTypes)=>{
-    const Deposit = sequalize.define('deposit',{
+    const Withdraw = sequalize.define('witdraw',{
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: DataTypes.INTEGER
           },
-        account:DataTypes.INTEGER,
-        amount:DataTypes.STRING, 
+        account:DataTypes.STRING,
+        amount:DataTypes.INTEGER, 
+        paymentmethod:DataTypes.STRING
     },{
         freezeTablename:true,
     });
 
-    return  Deposit;
+    return  Withdraw
 }
