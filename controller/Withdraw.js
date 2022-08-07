@@ -4,8 +4,8 @@ const {
   } = require("../service/db/sequelize");
   
   const makeWithdraw = async (req, res, next) => {
-    const { id, account, amount } = req.body;
-  
+    const { account, amount, paymentmethod } = req.body;
+    const { id } = req.payload.dataValues;
     try {
       const withdraw = await Withdraw.create({
         account: account,
@@ -14,7 +14,7 @@ const {
         userId: id,
       });
   
-      if (!deposit)
+      if (!withdraw)
         throw createHttpError.InternalServerError("Unable to create deposit");
   
       res.send({
@@ -28,11 +28,22 @@ const {
   
   const getWithdraws = async (req, res, next) => {
     try {
+      const usersData = []
       const withdraw = await Withdraw.findAll();
-      if (!deposits) throw createHttpError.InternalServerError();
+      
+      if (!withdraw) throw createHttpError.InternalServerError();
+     
+      withdraw.map(user => {
+        const userDetail = {
+          ...user.dataValues,
+          createdAt: new Date(user.createdAt).toDateString()
+        }
+        usersData.push(userDetail)
+  
+      })
       res.send({
         status: 200,
-        withdraw: withdraw,
+        withdraw: usersData,
       });
     } catch (error) {
       next(error);
@@ -40,23 +51,33 @@ const {
   };
   
   const getUserWithdraws = async (req, res, next) => {
-    const { id } = req.body;
+    const { id } = req.payload.dataValues;
+    const usersData = []
+    
     try {
       const user = await User.findByPk(id, { include: ["withdraws"] });
+      
       if (!user) throw createHttpError.InternalServerError();
       const { withdraws } = user;
+      
       const lastWithdraw = Number(withdraws[withdraws.length - 1].amount);
       const allWithdraws = [];
       let totalWithdraws = 0;
   
-      await deposits.map((deposit) => {
-        return allWithdraws.push(Number(deposit.amount));
+      await withdraws.map((withdraw) => {
+         allWithdraws.push(Number(withdraw.amount));
+         const userDetail = {
+          ...withdraw.dataValues,
+          createdAt: new Date(user.createdAt).toDateString()
+        }
+        usersData.push(userDetail)
       });
   
       totalWithdraws = allWithdraws.reduce((a, b) => a + b, 0)
   
       res.send({
         status: 200,
+        userWithdraws:usersData,
         withdraws: allWithdraws,
         lastWithdraw:lastWithdraw,
         totalWithdraws:totalWithdraws

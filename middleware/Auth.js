@@ -13,6 +13,7 @@ const verifyAccessToken = (req, res, next) => {
         }
       }
       req.payload = payload;
+      console.log(req.payload.dataValues.id);
       
       next();
     });

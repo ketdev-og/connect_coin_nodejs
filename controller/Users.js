@@ -1,7 +1,10 @@
 const createHttpError = require('http-errors');
+
 const {
   models: {
-    User
+    User,
+    Deposit,
+    Withdraw
   },
 } = require("../service/db/sequelize");
 
@@ -94,13 +97,15 @@ const getAllUsersController = async (req, res, next) => {
 const getCounts = async (req, res, next) => {
   try {
     const userCount = await User.count();
+    const depositCount = await Deposit.count()
+    const withCount = await Withdraw.count()
     if (!userCount) throw createHttpError.InternalServerError();
     res.send({
       status: 200,
       counts: {
         userCount: userCount,
-        withdrawalCount: "",
-        depositCount: ""
+        withdrawalCount: withCount,
+        depositCount: depositCount
       }
     });
   } catch (error) {

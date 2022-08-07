@@ -7,7 +7,7 @@ module.exports = (sequalize, DataTypes)=>{
             type: DataTypes.INTEGER
           },
         account:DataTypes.INTEGER,
-        amount:DataTypes.STRING, 
+        amount:DataTypes.INTEGER, 
     },{
         freezeTablename:true,
     });

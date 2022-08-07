@@ -2,7 +2,7 @@ const {
   models: { Deposit, User },
   sequelize,
 } = require("../service/db/sequelize");
-
+const createHttpError =  require("http-errors")
 const makeDeposite = async (req, res, next) => {
   const { id, account, amount } = req.body;
 
@@ -27,11 +27,21 @@ const makeDeposite = async (req, res, next) => {
 
 const getDeposits = async (req, res, next) => {
   try {
+    const usersData = []
     const deposits = await Deposit.findAll();
     if (!deposits) throw createHttpError.InternalServerError();
+    
+    deposits.map(user => {
+      const userDetail = {
+        ...user.dataValues,
+        createdAt: new Date(user.createdAt).toDateString()
+      }
+      usersData.push(userDetail)
+    })
+
     res.send({
       status: 200,
-      deposits: deposits,
+      deposits: usersData,
     });
   } catch (error) {
     next(error);
@@ -39,7 +49,8 @@ const getDeposits = async (req, res, next) => {
 };
 
 const getUserDepsoits = async (req, res, next) => {
-  const { id } = req.body;
+  const { id } = req.payload.dataValues;
+  const usersData = []
   try {
     const user = await User.findByPk(id, { include: ["deposits"] });
     if (!user) throw createHttpError.InternalServerError();
@@ -47,6 +58,14 @@ const getUserDepsoits = async (req, res, next) => {
     const lastDeposit = Number(deposits[deposits.length - 1].amount);
     const allDeposits = [];
     let totalDeposits = 0;
+    deposits.map(user => {
+      const userDetail = {
+        ...user.dataValues,
+        createdAt: new Date(user.createdAt).toDateString()
+      }
+      usersData.push(userDetail)
+
+    })
 
     await deposits.map((deposit) => {
       return allDeposits.push(Number(deposit.amount));
@@ -56,7 +75,8 @@ const getUserDepsoits = async (req, res, next) => {
 
     res.send({
       status: 200,
-      deposits: allDeposits,
+      deposits:usersData,
+      depositsAmount: allDeposits,
       lastDeposit:lastDeposit,
       totalDeposits:totalDeposits
     });
