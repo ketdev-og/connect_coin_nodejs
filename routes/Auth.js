@@ -2,7 +2,7 @@ const express = require("express");
 const {registerController, loginController} = require("../controller/Auth");
 const { makeDeposite, getDeposits, getUserDepsoits } = require("../controller/Deposite");
 const {getUserController, updateUserController, getAllUsersController, getCounts, getUserById, deleteUser} = require('../controller/Users');
-const { makeWithdraw, getWithdraws, getUserWithdraws } = require("../controller/Withdraw");
+const { makeWithdraw, getWithdraws, getUserWithdraws, approveWithDraw } = require("../controller/Withdraw");
 const { verifyAccessToken } = require("../middleware/Auth");
 const router = express.Router();
 
@@ -22,7 +22,8 @@ router.get("/user/deposit",verifyAccessToken, getUserDepsoits)
 
 router.post("/add/withdraw",verifyAccessToken, makeWithdraw);
 router.get("/withdraws", getWithdraws);
-router.get("/user/withdraw", verifyAccessToken, getUserWithdraws)
+router.get("/user/withdraw", verifyAccessToken, getUserWithdraws);
+router.post("/validate/withdraw", approveWithDraw)
 
 
 

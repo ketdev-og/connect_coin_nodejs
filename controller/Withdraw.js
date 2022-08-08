@@ -87,5 +87,21 @@ const {
     }
   };
   
-  module.exports = { makeWithdraw, getWithdraws, getUserWithdraws };
+  const approveWithDraw = async(req, res, next) => {
+    console.log(req.body);
+    const {id}  = req.body;
+    const withdraw = await Withdraw.update(
+      {
+          status:"successfull"
+      },
+      {
+      where:{
+        id:id
+      }
+    }
+    
+    );
+
+  }
+  module.exports = { makeWithdraw, getWithdraws, getUserWithdraws, approveWithDraw };
   

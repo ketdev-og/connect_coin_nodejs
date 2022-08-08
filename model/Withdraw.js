@@ -8,7 +8,11 @@ module.exports = (sequalize, DataTypes)=>{
           },
         account:DataTypes.INTEGER,
         amount:DataTypes.INTEGER, 
-        paymentmethod:DataTypes.STRING
+        paymentmethod:DataTypes.STRING,
+        status:{
+            type:DataTypes.STRING,
+            defaultValue:"Pending"
+        }
     },{
         freezeTablename:true,
     });
